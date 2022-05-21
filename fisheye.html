@@ -1,0 +1,138 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v3.min.js"></script>
+    <script src="jquery-3.5.0.js"></script>
+    <script src="ficheye.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="chart"></div>
+</body>
+<script>
+    
+   var width = 1000;
+   var height = 600;
+var color = d3.scale.linear()
+.range(["steelblue", "brown"])
+.interpolate(d3.interpolateHcl)
+.domain([0, 200]);
+    var fisheye = d3.fisheye.circular()
+            .radius(200)
+            .distortion(2); 
+        var svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+var noeud;
+var arcs;
+function Noeud(x,y) {
+    this.x=x;
+    this.y=y;   
+}
+d3.csv('foot2.csv',function(d){arcs=d;})
+d3.csv('foot1.csv', function(d) {
+noeud=d;});
+d3.csv('foot2.csv', function(d) {
+var lignes=svg.selectAll("line")
+        .data(d)
+        .enter()
+        .append("line")
+        .datum(function (d) {
+            return{x1 : noeud[d.id_dep-1].cx*width, x2 :noeud[d.id_des-1].cx*width, y1:noeud[d.id_dep-1].cy*height, y2:noeud[d.id_des-1].cy*height, v:d.valeur }
+        })
+        .attr('x1',function (d) {
+            return d.x1;
+        })
+        .attr('x2',function(d){return d.x2;} )
+        .attr('y1',function(d){return d.y1;} )
+        .attr('y2',function(d){return d.y2;} )
+        .attr('stroke','gray' )
+        .attr('stroke-width',function(d) {return d.v})
+        .style('z-index',1); 
+});
+    d3.csv('foot1.csv', function(d) {
+        
+    //var noeud=d;
+
+
+      var cercles=svg.selectAll("circle")
+        .data(d)
+        .enter()
+        .append("circle")
+        .datum( function(d) {
+            return {x: d.cx*width, y: d.cy*height, r : d.r*30}
+        })
+        .attr("cx", function (d) {return d.x})
+        .attr("cy", function (d) {return d.y})
+        .attr("r", function (d) {return d.r})
+        .attr('fill',color(Math.random()*200));
+
+
+        var text = svg.selectAll("text")
+    .data(d)
+    .enter()
+    .append("text")
+    .attr("x", function(d) {
+        return d.cx * width;
+    })
+    .attr("y", function(d) {
+        return d.cy * height;
+    })
+    .text(function(d) {
+        return d.noeud;
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "middle")
+    .attr("fill", "black");
+
+        
+   }); 
+   svg.on("mousemove", function() {
+        fisheye.focus(d3.mouse(this));
+        cercles=svg.selectAll("circle");
+        cercles.each(function(d) { d.fisheye = fisheye(d);
+        })
+            .attr("cx", function(d) { return d.fisheye.x; })
+            .attr("cy", function(d) { return d.fisheye.y; })
+            .attr("r", function(d) { return d.fisheye.z * 15; });
+         var lignes=svg.selectAll("line");
+      //   console.log(lignes);
+        lignes.each(function(d){
+            var dep=new Noeud(d.x1,d.y1);
+            var des=new Noeud(d.x2,d.y2);
+            d.dep=fisheye(dep);
+            d.des=fisheye(des);
+        })
+        .attr("x1", function(d) { return d.dep.x })
+            .attr("y1", function(d) { return d.dep.y; })
+            .attr('x2',function(d) { return d.des.x; } )
+            .attr('y2',function(d) { return d.des.y; } )
+            .attr('stroke-width',function(d){ return d.v  } );
+            var text=svg.selectAll("text");
+            text.each(function(d){
+                text=new Noeud(d.cx*width,d.cy*height);
+                return d.fisheye = fisheye(text);
+
+            })
+            .attr("x",function(d) { return d.fisheye.x; } )
+            .attr('y',function(d) { return d.fisheye.y; } )
+            .text(function(d){
+                return d.noeud;
+            })
+            .attr("font-family", "sans-serif")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "middle")
+    .attr("fill", "black");
+     });
+     var cercles=svg.selectAll('circle');
+     var lignes=svg.selectAll('line');
+     
+ 
+</script>
+</html>

@@ -1,0 +1,26 @@
+<html>
+<head>
+<title> Formes</title>
+<script src="d3.v3.min.js"></script>
+<script src="jquery-3.5.0.js"></script>
+</head>
+<div id="chart" style="width: 400; height: 400;">
+</div>
+<div width="50%">
+<fieldset>
+<legend>Select the transition to apply</legend>
+<input id="move" type="checkbox" name="move" value="move" />Move<br />
+<input id="size" type="checkbox" name="size" value="size" />Size<br />
+<input id="color" type="checkbox" name="color" value="color" />Color<br /><br />
+<button onclick="runTransitions()">Run transitions</button>
+<button onclick="removeTransitions()">Remove transitions</button>
+</fieldset>
+<p>
+<label for="nAngle"
+style="display: inline-block; width: 240px; text-align: right">
+angle = <span id="nAngle-value">0</span> </label>
+<input type="range" min="0" max="360" id="Anglevar">
+</p>
+</div>
+<script src="app.js"></script>
+</html>

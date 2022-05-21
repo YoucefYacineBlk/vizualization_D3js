@@ -1,0 +1,79 @@
+<html>
+<head>
+<title> Formes</title>
+<script src="d3.v3.min.js"></script>
+<script src="jquery-3.5.0.js"></script>
+
+<style>
+    svg{
+        border: 1px solid green;
+    }
+</style>
+</head>
+<div id="chart" style="width: 900; height: 500;">
+</div>
+<script>
+var width = 300;
+var height = 300;
+var color = d3.scale.linear()
+.range(["steelblue", "brown"])
+.interpolate(d3.interpolateHcl)
+.domain([0, 200]);
+var svg = d3.select("#chart")
+.append('svg')
+.attr('width', 900 )
+.attr('height', 500)
+.style('background-color', 'white')
+.style("border", 1 );
+for (let i = 0; i < 200; i++) {
+var cercle = svg.append('circle')
+.attr("r",25*Math.random())
+.attr("cx",(Math.random()*900 + 20)).attr("cy",(Math.random()*500 + 20))
+.attr("fill",color(Math.random()*200))
+var coef=Math.random()
+var rect= svg.append('rect')
+.attr('x',Math.random()*850)
+.attr('y',Math.random()*450)
+.attr('fill',color(Math.random()*200))
+.attr('width', 50*coef)
+.attr('height', 50*coef);}
+var line= svg.append('line')
+.attr('x1',20)
+.attr('y1',20)
+.attr('x2',width/2)
+.attr('y2',height/2)
+//.......
+var rect= svg.append('rect')
+.attr('x',200)
+.attr('y',200)
+//......
+.attr('fill','#7b1544')
+document.querySelectorAll('circle').forEach(function(element){
+    element.addEventListener('mouseover',function(e){
+e.target.style.fill = color(Math.random()*200);
+});
+});
+document.querySelectorAll('rect').forEach(function(element){
+    element.addEventListener('mouseover',function(e){
+e.target.style.fill = color(Math.random()*200);
+
+});
+
+});
+document.querySelectorAll('circle').forEach(function(element){
+    element.addEventListener('mouseout',function(e){
+e.target.style.fill = color(Math.random()*200);
+});
+});
+document.querySelectorAll('rect').forEach(function(element){
+    element.addEventListener('mouseout',function(e){
+e.target.style.fill = color(Math.random()*200);
+
+});
+
+});
+
+
+
+</script>
+</html>
